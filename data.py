@@ -9,11 +9,13 @@ param_pairs = PARAMS_URL.split("&")
 params = {pair.split("=")[0]: pair.split("=")[1] for pair in param_pairs}
 print(f"{__name__}| params    : {params}")
 
+JSON_RESPONSE = "response_code"
+JSON_RESULTS = "results"
 print(f"{__name__}| fetching {URL}...")
 response = requests.get(ENDPOINT, params=params)
 response.raise_for_status()
 json_data = response.json()
-question_data = json_data["results"]
+question_data = json_data[JSON_RESULTS]
 print(json.dumps(question_data, indent=4))
 
 

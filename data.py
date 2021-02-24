@@ -1,5 +1,7 @@
 import requests
 import json
+import html
+
 URL = "https://opentdb.com/api.php?amount=10&type=boolean"
 ENDPOINT, PARAMS_URL = URL.split("?")
 print(f"{__name__}| ENDPOINT  : {ENDPOINT}")
@@ -16,6 +18,8 @@ response = requests.get(ENDPOINT, params=params)
 response.raise_for_status()
 json_data = response.json()
 question_data = json_data[JSON_RESULTS]
+for question_dict in question_data:
+    question_dict["question"] = html.unescape(question_dict["question"])
 print(json.dumps(question_data, indent=4))
 
 

@@ -1,12 +1,16 @@
 import tkinter
+import quiz_brain
 
 THEME_COLOR = "#375362"
 WHITE = "white"
-QUESTION_FONT = ("arial", 20, "italic")
+QUESTION_FONT = ("arial", 14, "italic")
 
 
 class QuizUI:
-    def __init__(self):
+    def __init__(self, quizbrain: quiz_brain.QuizBrain):
+
+        self.quizbrain = quizbrain
+
         self.window = tkinter.Tk()
         self.window.title = "Quizzler"
         self.window.config(
@@ -28,6 +32,7 @@ class QuizUI:
         self.question = self.canvas.create_text(
             150,                # text center x
             125,                # text center y
+            width=295,
             text="question",
             font=QUESTION_FONT
         )
@@ -40,4 +45,12 @@ class QuizUI:
         self.false_button = tkinter.Button(image=false_image)
         self.false_button.grid(row=2, column=1)
 
+        self.get_next_question()
+
         self.window.mainloop()
+
+    def get_next_question(self):
+        self.canvas.itemconfig(
+            self.question,
+            text=self.quizbrain.next_question()
+        )

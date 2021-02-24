@@ -9,7 +9,7 @@ QUESTION_FONT = ("arial", 14, "italic")
 class QuizUI:
     def __init__(self, quizbrain: quiz_brain.QuizBrain):
 
-        self.quizbrain = quizbrain
+        self.quiz = quizbrain
 
         self.window = tkinter.Tk()
         self.window.title = "Quizzler"
@@ -38,11 +38,11 @@ class QuizUI:
         )
 
         true_image = tkinter.PhotoImage(file="images/true.png")
-        self.true_button = tkinter.Button(image=true_image)
+        self.true_button = tkinter.Button(image=true_image, command=self.answer_true)
         self.true_button.grid(row=2, column=0)
 
         false_image = tkinter.PhotoImage(file="images/false.png")
-        self.false_button = tkinter.Button(image=false_image)
+        self.false_button = tkinter.Button(image=false_image, command=self.answer_false)
         self.false_button.grid(row=2, column=1)
 
         self.get_next_question()
@@ -50,7 +50,35 @@ class QuizUI:
         self.window.mainloop()
 
     def get_next_question(self):
-        self.canvas.itemconfig(
-            self.question,
-            text=self.quizbrain.next_question()
-        )
+        self.score.config(text=f"Score: {self.quiz.score}")
+        self.canvas.config(bg="WHITE")
+        if self.quiz.still_has_questions():
+            self.canvas.itemconfig(
+                self.question,
+                text=self.quiz.next_question()
+            )
+            self.true_button.config(state="active")
+            self.false_button.config(state="active")
+        else:
+            self.canvas.itemconfig(
+                self.question,
+                text="you reached the end of the quiz"
+            )
+
+    def answer_true(self):
+        is_right = self.quiz.check_answer("True")
+        self.give_feedback(is_right)
+
+    def answer_false(self):
+        is_right = self.quiz.check_answer("False")
+        self.give_feedback(is_right)
+
+    def give_feedback(self, is_right):
+        if is_right:
+            self.canvas.config(bg="GREEN")
+        else:
+            self.canvas.config(bg="RED")
+
+        self.true_button.config(state="disabled")
+        self.false_button.config(state="disabled")
+        self.window.after(1000, self.get_next_question)

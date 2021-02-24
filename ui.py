@@ -9,7 +9,7 @@ QUESTION_FONT = ("arial", 14, "italic")
 class QuizUI:
     def __init__(self, quizbrain: quiz_brain.QuizBrain):
 
-        self.quiz = quizbrain
+        self.quiz = quizbrain   # save QuizBrain object reference
 
         self.window = tkinter.Tk()
         self.window.title = "Quizzler"
@@ -50,19 +50,27 @@ class QuizUI:
         self.window.mainloop()
 
     def get_next_question(self):
-        self.score.config(text=f"Score: {self.quiz.score}")
-        self.canvas.config(bg="WHITE")
+        """
+        - gets next question from QuizBrain reference if there are questions left
+        - updates score
+        - restores canvas background color
+        - updates canvas text with next question
+        - enables buttons
+        :return:
+        """
+        self.score.config(text=f"Score: {self.quiz.score}")     # update score label
+        self.canvas.config(bg="WHITE")                          # restore canvas background
         if self.quiz.still_has_questions():
-            self.canvas.itemconfig(
+            self.canvas.itemconfig(                             # update canvas text
                 self.question,
                 text=self.quiz.next_question()
             )
-            self.true_button.config(state="active")
+            self.true_button.config(state="active")             # enables buttons
             self.false_button.config(state="active")
         else:
             self.canvas.itemconfig(
                 self.question,
-                text="you reached the end of the quiz"
+                text="you reached the end of the quiz"          # update canvas text
             )
 
     def answer_true(self):
@@ -75,10 +83,10 @@ class QuizUI:
 
     def give_feedback(self, is_right):
         if is_right:
-            self.canvas.config(bg="GREEN")
+            self.canvas.config(bg="GREEN")                      # change canvas background colore
         else:
             self.canvas.config(bg="RED")
 
-        self.true_button.config(state="disabled")
+        self.true_button.config(state="disabled")               # disables buttons
         self.false_button.config(state="disabled")
-        self.window.after(1000, self.get_next_question)
+        self.window.after(1000, self.get_next_question)         # call get_next_question after 1s

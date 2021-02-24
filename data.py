@@ -1,21 +1,30 @@
 import requests
 import json
 import html
-
+#
+# separate URL in endpoint and params
+#
 URL = "https://opentdb.com/api.php?amount=10&type=boolean"
 ENDPOINT, PARAMS_URL = URL.split("?")
 print(f"{__name__}| ENDPOINT  : {ENDPOINT}")
 print(f"{__name__}| PARAMS_URL: {PARAMS_URL}")
-
+#
+# convert params url in dictionary
+#
 param_pairs = PARAMS_URL.split("&")
 params = {pair.split("=")[0]: pair.split("=")[1] for pair in param_pairs}
 print(f"{__name__}| params    : {params}")
-
+#
+# fetch data
+#
 JSON_RESPONSE = "response_code"
 JSON_RESULTS = "results"
 print(f"{__name__}| fetching {URL}...")
 response = requests.get(ENDPOINT, params=params)
 response.raise_for_status()
+#
+# format and save data
+#
 json_data = response.json()
 question_data = json_data[JSON_RESULTS]
 for question_dict in question_data:
